@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表 - 用于登录认证
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("employee") // boss, employee
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 配件表
+model Part {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String?
+  spec        String?  // 规格
+  unit        String?  // 单位
+  costPrice   Float    @default(0)
+  sellPrice   Float    @default(0)
+  stock       Int      @default(0)
+  minStock    Int      @default(0) // 最低库存预警
+  supplierId  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  supplier    Supplier? @relation(fields: [supplierId], references: [id])
+  stockLogs   StockLog[]
+  orderItems  OrderItem[]
+}
+
+// 库存流水表
+model StockLog {
+  id        Int      @id @default(autoincrement())
+  partId    Int
+  type      String   // in, out
+  quantity  Int
+  reason    String?  // 入库原因/出库原因
+  orderId   Int?     // 关联维修单
+  createdAt DateTime @default(now())
+
+  part      Part     @relation(fields: [partId], references: [id])
+}
+
+// 客户表
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String?
+  address   String?
+  balance   Float    @default(0) // 会员储值余额
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicles  Vehicle[]
+  orders    Order[]
+}
+
+// 车辆表
+model Vehicle {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  plateNumber String   @unique
+  brand       String?
+  model       String?
+  createdAt   DateTime @default(now())
+
+  customer    Customer @relation(fields: [customerId], references: [id])
+  orders      Order[]
+}
+
+// 维修工单表
+model Order {
+  id          Int      @id @default(autoincrement())
+  orderNo     String   @unique
+  customerId  Int
+  vehicleId   Int
+  mileage     Int?     // 里程数
+  status      String   @default("pending") // pending, completed, cancelled
+  totalAmount Float    @default(0)
+  paidAmount  Float    @default(0)
+  paymentType String?  // cash, member
+  remark      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  customer    Customer @relation(fields: [customerId], references: [id])
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  items       OrderItem[]
+}
+
+// 维修工单明细表
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  partId    Int?
+  itemName  String  // 项目名称/配件名称
+  type      String  // part, labor // 配件/工时
+  quantity  Int     @default(1)
+  price     Float   @default(0)
+  amount    Float   @default(0)
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  part      Part?   @relation(fields: [partId], references: [id])
+}
+
+// 供应商表
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String
+  contact   String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parts     Part[]
+}
+
+// 财务记录表
+model FinanceRecord {
+  id        Int      @id @default(autoincrement())
+  type      String   // income, expense
+  category  String?  // 分类
+  amount    Float
+  remark    String?
+  createdAt DateTime @default(now())
+}
