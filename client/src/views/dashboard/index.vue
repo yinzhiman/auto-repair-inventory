@@ -4,26 +4,45 @@
       <h1>欢迎使用汽修店进销存管理系统</h1>
 
       <div class="stats-grid">
-        <div class="stat-card warning" @click="goToLowStock">
+        <div
+          class="stat-card warning"
+          @click="goToLowStock"
+        >
           <div class="stat-icon">
-            <el-icon :size="32"><Warning /></el-icon>
+            <el-icon :size="32">
+              <Warning />
+            </el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ lowStockCount }}</div>
-            <div class="stat-label">库存预警</div>
+            <div class="stat-value">
+              {{ lowStockCount }}
+            </div>
+            <div class="stat-label">
+              库存预警
+            </div>
           </div>
           <div class="stat-action">
             <el-icon><ArrowRight /></el-icon>
           </div>
         </div>
 
-        <div class="stat-card danger" @click="goToMonthlyDue" v-if="monthlyDueCount > 0">
+        <div
+          v-if="monthlyDueCount > 0"
+          class="stat-card danger"
+          @click="goToMonthlyDue"
+        >
           <div class="stat-icon">
-            <el-icon :size="32"><Clock /></el-icon>
+            <el-icon :size="32">
+              <Clock />
+            </el-icon>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ monthlyDueCount }}</div>
-            <div class="stat-label">月结今日到期</div>
+            <div class="stat-value">
+              {{ monthlyDueCount }}
+            </div>
+            <div class="stat-label">
+              月结今日到期
+            </div>
           </div>
           <div class="stat-action">
             <el-icon><ArrowRight /></el-icon>
@@ -31,57 +50,122 @@
         </div>
       </div>
 
-      <div class="section" v-if="monthlyDueList.length > 0">
+      <div
+        v-if="monthlyDueList.length > 0"
+        class="section"
+      >
         <div class="section-header">
           <h2>月结到期提醒</h2>
-          <el-button text type="primary" @click="goToMonthlyDue">
+          <el-button
+            text
+            type="primary"
+            @click="goToMonthlyDue"
+          >
             查看全部
             <el-icon><ArrowRight /></el-icon>
           </el-button>
         </div>
-        <el-table :data="monthlyDueList" stripe size="small">
-          <el-table-column prop="orderNo" label="工单号" width="150" />
-          <el-table-column label="客户" width="120">
+        <el-table
+          :data="monthlyDueList"
+          stripe
+          size="small"
+        >
+          <el-table-column
+            prop="orderNo"
+            label="工单号"
+            width="150"
+          />
+          <el-table-column
+            label="客户"
+            width="120"
+          >
             <template #default="{ row }">
               {{ row.customer?.name || '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="欠款金额" width="120">
+          <el-table-column
+            label="欠款金额"
+            width="120"
+          >
             <template #default="{ row }">
               <span class="amount-text">¥{{ (row.totalAmount - row.paidAmount).toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="到期日" width="120">
+          <el-table-column
+            label="到期日"
+            width="120"
+          >
             <template #default="{ row }">
               {{ new Date(row.dueDate).toLocaleDateString() }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="80">
+          <el-table-column
+            label="操作"
+            width="80"
+          >
             <template #default="{ row }">
-              <el-button size="small" text type="primary" @click="goToOrderDetail(row.id)">详情</el-button>
+              <el-button
+                size="small"
+                text
+                type="primary"
+                @click="goToOrderDetail(row.id)"
+              >
+                详情
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
-      <div class="section" v-if="lowStockList.length > 0">
+      <div
+        v-if="lowStockList.length > 0"
+        class="section"
+      >
         <div class="section-header">
           <h2>库存预警配件</h2>
-          <el-button text type="primary" @click="goToLowStock">
+          <el-button
+            text
+            type="primary"
+            @click="goToLowStock"
+          >
             查看全部
             <el-icon><ArrowRight /></el-icon>
           </el-button>
         </div>
-        <el-table :data="lowStockList" stripe size="small">
-          <el-table-column prop="name" label="配件名称" min-width="150" />
-          <el-table-column prop="category" label="分类" width="120" />
-          <el-table-column prop="stock" label="当前库存" width="100">
+        <el-table
+          :data="lowStockList"
+          stripe
+          size="small"
+        >
+          <el-table-column
+            prop="name"
+            label="配件名称"
+            min-width="150"
+          />
+          <el-table-column
+            prop="category"
+            label="分类"
+            width="120"
+          />
+          <el-table-column
+            prop="stock"
+            label="当前库存"
+            width="100"
+          >
             <template #default="{ row }">
               <span class="low-stock-text">{{ row.stock }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="minStock" label="最低库存" width="100" />
-          <el-table-column prop="shortage" label="缺口" width="80">
+          <el-table-column
+            prop="minStock"
+            label="最低库存"
+            width="100"
+          />
+          <el-table-column
+            prop="shortage"
+            label="缺口"
+            width="80"
+          >
             <template #default="{ row }">
               <span class="shortage-text">-{{ row.shortage }}</span>
             </template>

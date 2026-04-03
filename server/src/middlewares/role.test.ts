@@ -8,21 +8,21 @@ const createApp = () => {
   app.use(express.json())
 
   app.get('/admin-only', (req, _res, next) => {
-    ;(req as any).user = { id: 1, username: 'admin', name: '管理员', role: 'boss' }
+    (req as any).user = { id: 1, username: 'admin', name: '管理员', role: 'boss' }
     next()
   }, requireRole('boss'), (_req, res) => {
     res.json({ success: true })
   })
 
   app.get('/employee-access', (req, _res, next) => {
-    ;(req as any).user = { id: 2, username: 'employee', name: '员工', role: 'employee' }
+    (req as any).user = { id: 2, username: 'employee', name: '员工', role: 'employee' }
     next()
   }, requireRole('employee'), (_req, res) => {
     res.json({ success: true })
   })
 
   app.get('/admin-required', (req, _res, next) => {
-    ;(req as any).user = { id: 2, username: 'employee', name: '员工', role: 'employee' }
+    (req as any).user = { id: 2, username: 'employee', name: '员工', role: 'employee' }
     next()
   }, requireRole('boss'), (_req, res) => {
     res.json({ success: true })

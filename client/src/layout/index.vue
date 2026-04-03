@@ -1,8 +1,16 @@
 <template>
   <el-container class="layout-container">
-    <el-aside width="200px" class="layout-aside">
+    <el-aside
+      width="200px"
+      class="layout-aside"
+    >
       <div class="logo">
-        <el-icon :size="24" color="#409eff"><Tools /></el-icon>
+        <el-icon
+          :size="24"
+          color="#409eff"
+        >
+          <Tools />
+        </el-icon>
         <span>汽修店管理</span>
       </div>
       <el-menu
@@ -34,7 +42,11 @@
       <el-header class="layout-header">
         <div class="header-right">
           <span class="user-name">{{ userStore.user?.name }}</span>
-          <el-button type="danger" text @click="handleLogout">
+          <el-button
+            type="danger"
+            text
+            @click="handleLogout"
+          >
             <el-icon><SwitchButton /></el-icon>
             退出
           </el-button>

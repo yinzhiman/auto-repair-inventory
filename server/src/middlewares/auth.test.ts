@@ -32,7 +32,7 @@ const createApp = () => {
       })
       ;(req as any).cookies = cookies
     } else {
-      ;(req as any).cookies = {}
+      (req as any).cookies = {}
     }
     next()
   })

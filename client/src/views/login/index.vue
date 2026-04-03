@@ -3,10 +3,17 @@
     <div class="login-card">
       <div class="login-header">
         <div class="logo">
-          <el-icon :size="48" color="#409eff"><Tools /></el-icon>
+          <el-icon
+            :size="48"
+            color="#409eff"
+          >
+            <Tools />
+          </el-icon>
         </div>
         <h1>汽修店管理系统</h1>
-        <p class="subtitle">进销存管理平台</p>
+        <p class="subtitle">
+          进销存管理平台
+        </p>
       </div>
 
       <el-form

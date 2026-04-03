@@ -3,7 +3,10 @@
     <div class="inventory-page">
       <div class="page-header">
         <h1>库存管理</h1>
-        <el-button type="primary" @click="handleAdd">
+        <el-button
+          type="primary"
+          @click="handleAdd"
+        >
           <el-icon><Plus /></el-icon>
           新增配件
         </el-button>
@@ -17,42 +20,138 @@
           style="width: 200px"
           @keyup.enter="loadParts"
         />
-        <el-select v-model="searchParams.category" placeholder="选择分类" clearable style="width: 150px">
-          <el-option v-for="cat in categories" :key="cat" :label="cat" :value="cat" />
+        <el-select
+          v-model="searchParams.category"
+          placeholder="选择分类"
+          clearable
+          style="width: 150px"
+        >
+          <el-option
+            v-for="cat in categories"
+            :key="cat"
+            :label="cat"
+            :value="cat"
+          />
         </el-select>
-        <el-checkbox v-model="searchParams.lowStock" @change="loadParts">仅显示库存预警</el-checkbox>
-        <el-button type="primary" @click="loadParts">搜索</el-button>
+        <el-checkbox
+          v-model="searchParams.lowStock"
+          @change="loadParts"
+        >
+          仅显示库存预警
+        </el-checkbox>
+        <el-button
+          type="primary"
+          @click="loadParts"
+        >
+          搜索
+        </el-button>
       </div>
 
-      <el-table :data="parts" v-loading="loading" stripe>
-        <el-table-column prop="name" label="配件名称" min-width="150">
+      <el-table
+        v-loading="loading"
+        :data="parts"
+        stripe
+      >
+        <el-table-column
+          prop="name"
+          label="配件名称"
+          min-width="150"
+        >
           <template #default="{ row }">
             <span :class="{ 'low-stock-text': row.isLowStock }">{{ row.name }}</span>
-            <el-tag v-if="row.isLowStock" type="danger" size="small" style="margin-left: 8px">库存不足</el-tag>
+            <el-tag
+              v-if="row.isLowStock"
+              type="danger"
+              size="small"
+              style="margin-left: 8px"
+            >
+              库存不足
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="category" label="分类" width="120" />
-        <el-table-column prop="spec" label="规格" width="100" />
-        <el-table-column prop="unit" label="单位" width="80" />
-        <el-table-column prop="costPrice" label="成本价" width="100">
-          <template #default="{ row }">¥{{ row.costPrice?.toFixed(2) }}</template>
+        <el-table-column
+          prop="category"
+          label="分类"
+          width="120"
+        />
+        <el-table-column
+          prop="spec"
+          label="规格"
+          width="100"
+        />
+        <el-table-column
+          prop="unit"
+          label="单位"
+          width="80"
+        />
+        <el-table-column
+          prop="costPrice"
+          label="成本价"
+          width="100"
+        >
+          <template #default="{ row }">
+            ¥{{ row.costPrice?.toFixed(2) }}
+          </template>
         </el-table-column>
-        <el-table-column prop="sellPrice" label="销售价" width="100">
-          <template #default="{ row }">¥{{ row.sellPrice?.toFixed(2) }}</template>
+        <el-table-column
+          prop="sellPrice"
+          label="销售价"
+          width="100"
+        >
+          <template #default="{ row }">
+            ¥{{ row.sellPrice?.toFixed(2) }}
+          </template>
         </el-table-column>
-        <el-table-column prop="stock" label="库存" width="100">
+        <el-table-column
+          prop="stock"
+          label="库存"
+          width="100"
+        >
           <template #default="{ row }">
             <span :class="{ 'low-stock-text': row.isLowStock }">{{ row.stock }}</span>
-            <span v-if="row.minStock > 0" class="min-stock">/{{ row.minStock }}</span>
+            <span
+              v-if="row.minStock > 0"
+              class="min-stock"
+            >/{{ row.minStock }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="340" fixed="right">
+        <el-table-column
+          label="操作"
+          width="340"
+          fixed="right"
+        >
           <template #default="{ row }">
-            <el-button size="small" @click="handleStockLog(row)">流水</el-button>
-            <el-button size="small" @click="handleStockIn(row)">入库</el-button>
-            <el-button size="small" @click="handleStockOut(row)">出库</el-button>
-            <el-button size="small" @click="handleEdit(row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
+            <el-button
+              size="small"
+              @click="handleStockLog(row)"
+            >
+              流水
+            </el-button>
+            <el-button
+              size="small"
+              @click="handleStockIn(row)"
+            >
+              入库
+            </el-button>
+            <el-button
+              size="small"
+              @click="handleStockOut(row)"
+            >
+              出库
+            </el-button>
+            <el-button
+              size="small"
+              @click="handleEdit(row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(row)"
+            >
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -70,123 +169,320 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="editingPart ? '编辑配件' : '新增配件'" width="500px">
-      <el-form :model="formData" :rules="formRules" ref="formRef" label-width="80px">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入配件名称" />
+    <el-dialog
+      v-model="dialogVisible"
+      :title="editingPart ? '编辑配件' : '新增配件'"
+      width="500px"
+    >
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="名称"
+          prop="name"
+        >
+          <el-input
+            v-model="formData.name"
+            placeholder="请输入配件名称"
+          />
         </el-form-item>
         <el-form-item label="分类">
-          <el-input v-model="formData.category" placeholder="如：滤芯类、刹车系统" />
+          <el-input
+            v-model="formData.category"
+            placeholder="如：滤芯类、刹车系统"
+          />
         </el-form-item>
         <el-form-item label="规格">
-          <el-input v-model="formData.spec" placeholder="如：OC 47" />
+          <el-input
+            v-model="formData.spec"
+            placeholder="如：OC 47"
+          />
         </el-form-item>
         <el-form-item label="单位">
-          <el-input v-model="formData.unit" placeholder="如：个、升" />
+          <el-input
+            v-model="formData.unit"
+            placeholder="如：个、升"
+          />
         </el-form-item>
         <el-form-item label="成本价">
-          <el-input-number v-model="formData.costPrice" :min="0" :precision="2" style="width: 100%" />
+          <el-input-number
+            v-model="formData.costPrice"
+            :min="0"
+            :precision="2"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="销售价">
-          <el-input-number v-model="formData.sellPrice" :min="0" :precision="2" style="width: 100%" />
+          <el-input-number
+            v-model="formData.sellPrice"
+            :min="0"
+            :precision="2"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="最低库存">
-          <el-input-number v-model="formData.minStock" :min="0" style="width: 100%" />
+          <el-input-number
+            v-model="formData.minStock"
+            :min="0"
+            style="width: 100%"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+        <el-button @click="dialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleSubmit"
+        >
+          确定
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="stockInDialogVisible" title="配件入库" width="450px">
-      <el-form :model="stockInData" :rules="stockInRules" ref="stockInFormRef" label-width="80px">
-        <el-form-item label="入库类型" prop="source">
-          <el-select v-model="stockInData.source" style="width: 100%">
-            <el-option label="采购入库" value="purchase" />
-            <el-option label="客户自带" value="customer" />
-            <el-option label="期初库存" value="initial" />
-            <el-option label="二手再利用" value="used" />
-            <el-option label="其他入库" value="other" />
+    <el-dialog
+      v-model="stockInDialogVisible"
+      title="配件入库"
+      width="450px"
+    >
+      <el-form
+        ref="stockInFormRef"
+        :model="stockInData"
+        :rules="stockInRules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="入库类型"
+          prop="source"
+        >
+          <el-select
+            v-model="stockInData.source"
+            style="width: 100%"
+          >
+            <el-option
+              label="采购入库"
+              value="purchase"
+            />
+            <el-option
+              label="客户自带"
+              value="customer"
+            />
+            <el-option
+              label="期初库存"
+              value="initial"
+            />
+            <el-option
+              label="二手再利用"
+              value="used"
+            />
+            <el-option
+              label="其他入库"
+              value="other"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" prop="quantity">
-          <el-input-number v-model="stockInData.quantity" :min="1" style="width: 100%" />
+        <el-form-item
+          label="数量"
+          prop="quantity"
+        >
+          <el-input-number
+            v-model="stockInData.quantity"
+            :min="1"
+            style="width: 100%"
+          />
         </el-form-item>
-        <el-form-item v-if="stockInData.source === 'purchase'" label="成本价">
-          <el-input-number v-model="stockInData.costPrice" :min="0" :precision="2" style="width: 100%" />
+        <el-form-item
+          v-if="stockInData.source === 'purchase'"
+          label="成本价"
+        >
+          <el-input-number
+            v-model="stockInData.costPrice"
+            :min="0"
+            :precision="2"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="stockInData.reason" type="textarea" :rows="2" />
+          <el-input
+            v-model="stockInData.reason"
+            type="textarea"
+            :rows="2"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="stockInDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleStockInSubmit" :loading="submitting">确定</el-button>
+        <el-button @click="stockInDialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleStockInSubmit"
+        >
+          确定
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="stockOutDialogVisible" title="配件出库" width="450px">
-      <el-form :model="stockOutData" :rules="stockOutRules" ref="stockOutFormRef" label-width="80px">
-        <el-form-item label="出库类型" prop="outType">
-          <el-select v-model="stockOutData.outType" style="width: 100%">
-            <el-option label="维修领用" value="repair" />
-            <el-option label="退货出库" value="return" />
-            <el-option label="报损出库" value="damage" />
-            <el-option label="其他出库" value="other" />
+    <el-dialog
+      v-model="stockOutDialogVisible"
+      title="配件出库"
+      width="450px"
+    >
+      <el-form
+        ref="stockOutFormRef"
+        :model="stockOutData"
+        :rules="stockOutRules"
+        label-width="80px"
+      >
+        <el-form-item
+          label="出库类型"
+          prop="outType"
+        >
+          <el-select
+            v-model="stockOutData.outType"
+            style="width: 100%"
+          >
+            <el-option
+              label="维修领用"
+              value="repair"
+            />
+            <el-option
+              label="退货出库"
+              value="return"
+            />
+            <el-option
+              label="报损出库"
+              value="damage"
+            />
+            <el-option
+              label="其他出库"
+              value="other"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" prop="quantity">
-          <el-input-number v-model="stockOutData.quantity" :min="1" style="width: 100%" />
+        <el-form-item
+          label="数量"
+          prop="quantity"
+        >
+          <el-input-number
+            v-model="stockOutData.quantity"
+            :min="1"
+            style="width: 100%"
+          />
         </el-form-item>
-        <el-form-item v-if="stockOutData.outType === 'damage'" label="原因" prop="reason">
-          <el-input v-model="stockOutData.reason" type="textarea" :rows="2" placeholder="请填写报损原因" />
+        <el-form-item
+          v-if="stockOutData.outType === 'damage'"
+          label="原因"
+          prop="reason"
+        >
+          <el-input
+            v-model="stockOutData.reason"
+            type="textarea"
+            :rows="2"
+            placeholder="请填写报损原因"
+          />
         </el-form-item>
-        <el-form-item v-else label="备注">
-          <el-input v-model="stockOutData.reason" type="textarea" :rows="2" />
+        <el-form-item
+          v-else
+          label="备注"
+        >
+          <el-input
+            v-model="stockOutData.reason"
+            type="textarea"
+            :rows="2"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="stockOutDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleStockOutSubmit" :loading="submitting">确定</el-button>
+        <el-button @click="stockOutDialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleStockOutSubmit"
+        >
+          确定
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="stockLogDialogVisible" :title="`${stockLogPartName} - 库存流水`" width="700px">
-      <el-table :data="stockLogList" v-loading="stockLogLoading" stripe size="small">
-        <el-table-column prop="createdAt" label="时间" width="160">
+    <el-dialog
+      v-model="stockLogDialogVisible"
+      :title="`${stockLogPartName} - 库存流水`"
+      width="700px"
+    >
+      <el-table
+        v-loading="stockLogLoading"
+        :data="stockLogList"
+        stripe
+        size="small"
+      >
+        <el-table-column
+          prop="createdAt"
+          label="时间"
+          width="160"
+        >
           <template #default="{ row }">
             {{ new Date(row.createdAt).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" width="80">
+        <el-table-column
+          prop="type"
+          label="类型"
+          width="80"
+        >
           <template #default="{ row }">
-            <el-tag :type="row.type === 'in' ? 'success' : 'danger'" size="small">
+            <el-tag
+              :type="row.type === 'in' ? 'success' : 'danger'"
+              size="small"
+            >
               {{ row.type === 'in' ? '入库' : '出库' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="source" label="来源/类型" width="100">
+        <el-table-column
+          prop="source"
+          label="来源/类型"
+          width="100"
+        >
           <template #default="{ row }">
             <span v-if="row.type === 'in'">{{ sourceMap[row.source || ''] || row.source }}</span>
             <span v-else>{{ outTypeMap[row.outType || ''] || row.outType }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="quantity" label="数量" width="80">
+        <el-table-column
+          prop="quantity"
+          label="数量"
+          width="80"
+        >
           <template #default="{ row }">
             <span :class="row.type === 'in' ? 'stock-in-text' : 'stock-out-text'">
               {{ row.type === 'in' ? '+' : '-' }}{{ row.quantity }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="costPrice" label="成本价" width="80">
+        <el-table-column
+          prop="costPrice"
+          label="成本价"
+          width="80"
+        >
           <template #default="{ row }">
             <span v-if="row.costPrice">¥{{ row.costPrice.toFixed(2) }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column prop="reason" label="备注" min-width="120">
+        <el-table-column
+          prop="reason"
+          label="备注"
+          min-width="120"
+        >
           <template #default="{ row }">
             {{ row.reason || '-' }}
           </template>
@@ -204,7 +500,9 @@
         />
       </div>
       <template #footer>
-        <el-button @click="stockLogDialogVisible = false">关闭</el-button>
+        <el-button @click="stockLogDialogVisible = false">
+          关闭
+        </el-button>
       </template>
     </el-dialog>
   </Layout>

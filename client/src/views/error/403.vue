@@ -1,10 +1,20 @@
 <template>
   <div class="error-page">
     <div class="error-content">
-      <el-icon :size="80" color="#f56c6c"><WarningFilled /></el-icon>
+      <el-icon
+        :size="80"
+        color="#f56c6c"
+      >
+        <WarningFilled />
+      </el-icon>
       <h1>403</h1>
       <p>抱歉，您没有权限访问此页面</p>
-      <el-button type="primary" @click="goBack">返回上一页</el-button>
+      <el-button
+        type="primary"
+        @click="goBack"
+      >
+        返回上一页
+      </el-button>
     </div>
   </div>
 </template>

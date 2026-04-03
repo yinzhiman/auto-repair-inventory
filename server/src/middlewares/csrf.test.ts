@@ -14,7 +14,7 @@ app.use(express.json())
 let sessionCsrfToken: string | null = null
 
 app.use((req: Request, _res, next) => {
-  ;(req as any).session = { csrfToken: sessionCsrfToken }
+  (req as any).session = { csrfToken: sessionCsrfToken }
   next()
 })
 

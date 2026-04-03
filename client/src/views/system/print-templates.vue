@@ -5,20 +5,39 @@
         <template #header>
           <div class="card-header">
             <span>打印模板管理</span>
-            <el-button type="primary" @click="handleAdd">新建模板</el-button>
+            <el-button
+              type="primary"
+              @click="handleAdd"
+            >
+              新建模板
+            </el-button>
           </div>
         </template>
 
-        <el-table :data="templates" v-loading="loading" stripe>
-          <el-table-column prop="name" label="模板名称" />
-          <el-table-column prop="type" label="类型">
+        <el-table
+          v-loading="loading"
+          :data="templates"
+          stripe
+        >
+          <el-table-column
+            prop="name"
+            label="模板名称"
+          />
+          <el-table-column
+            prop="type"
+            label="类型"
+          >
             <template #default="{ row }">
               <el-tag :type="row.type === 'repair' ? 'primary' : 'info'">
                 {{ row.type === 'repair' ? '维修单' : '其他' }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="isDefault" label="默认模板" width="100">
+          <el-table-column
+            prop="isDefault"
+            label="默认模板"
+            width="100"
+          >
             <template #default="{ row }">
               <el-switch
                 :model-value="row.isDefault"
@@ -26,29 +45,70 @@
               />
             </template>
           </el-table-column>
-          <el-table-column prop="createdAt" label="创建时间" width="180">
+          <el-table-column
+            prop="createdAt"
+            label="创建时间"
+            width="180"
+          >
             <template #default="{ row }">
               {{ formatDate(row.createdAt) }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="150">
+          <el-table-column
+            label="操作"
+            width="150"
+          >
             <template #default="{ row }">
-              <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
-              <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
+              <el-button
+                type="primary"
+                link
+                @click="handleEdit(row)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                link
+                @click="handleDelete(row)"
+              >
+                删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
 
-      <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑模板' : '新建模板'" width="600px">
-        <el-form :model="form" label-width="100px">
-          <el-form-item label="模板名称" required>
-            <el-input v-model="form.name" placeholder="请输入模板名称" />
+      <el-dialog
+        v-model="dialogVisible"
+        :title="isEdit ? '编辑模板' : '新建模板'"
+        width="600px"
+      >
+        <el-form
+          :model="form"
+          label-width="100px"
+        >
+          <el-form-item
+            label="模板名称"
+            required
+          >
+            <el-input
+              v-model="form.name"
+              placeholder="请输入模板名称"
+            />
           </el-form-item>
           <el-form-item label="模板类型">
-            <el-select v-model="form.type" placeholder="请选择类型">
-              <el-option label="维修单" value="repair" />
-              <el-option label="其他" value="other" />
+            <el-select
+              v-model="form.type"
+              placeholder="请选择类型"
+            >
+              <el-option
+                label="维修单"
+                value="repair"
+              />
+              <el-option
+                label="其他"
+                value="other"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="设为默认">
@@ -64,8 +124,16 @@
           </el-form-item>
         </el-form>
         <template #footer>
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSave" :loading="saving">保存</el-button>
+          <el-button @click="dialogVisible = false">
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            :loading="saving"
+            @click="handleSave"
+          >
+            保存
+          </el-button>
         </template>
       </el-dialog>
     </div>

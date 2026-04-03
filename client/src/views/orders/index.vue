@@ -3,7 +3,10 @@
     <div class="order-page">
       <div class="page-header">
         <h1>维修工单</h1>
-        <el-button type="primary" @click="handleAdd">
+        <el-button
+          type="primary"
+          @click="handleAdd"
+        >
           <el-icon><Plus /></el-icon>
           新建工单
         </el-button>
@@ -17,10 +20,24 @@
           style="width: 200px"
           @keyup.enter="loadOrders"
         />
-        <el-select v-model="searchParams.status" placeholder="工单状态" clearable style="width: 120px">
-          <el-option label="待处理" value="pending" />
-          <el-option label="已完成" value="completed" />
-          <el-option label="已取消" value="cancelled" />
+        <el-select
+          v-model="searchParams.status"
+          placeholder="工单状态"
+          clearable
+          style="width: 120px"
+        >
+          <el-option
+            label="待处理"
+            value="pending"
+          />
+          <el-option
+            label="已完成"
+            value="completed"
+          />
+          <el-option
+            label="已取消"
+            value="cancelled"
+          />
         </el-select>
         <el-date-picker
           v-model="dateRange"
@@ -32,51 +49,116 @@
           style="width: 240px"
           @change="handleDateChange"
         />
-        <el-button type="primary" @click="loadOrders">搜索</el-button>
+        <el-button
+          type="primary"
+          @click="loadOrders"
+        >
+          搜索
+        </el-button>
       </div>
 
-      <el-table :data="orders" v-loading="loading" stripe>
-        <el-table-column prop="orderNo" label="工单号" width="150" />
-        <el-table-column label="客户" width="120">
+      <el-table
+        v-loading="loading"
+        :data="orders"
+        stripe
+      >
+        <el-table-column
+          prop="orderNo"
+          label="工单号"
+          width="150"
+        />
+        <el-table-column
+          label="客户"
+          width="120"
+        >
           <template #default="{ row }">
             {{ row.customer?.name || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="车辆" width="120">
+        <el-table-column
+          label="车辆"
+          width="120"
+        >
           <template #default="{ row }">
             {{ row.vehicle?.plateNumber || '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="车型" min-width="120">
+        <el-table-column
+          label="车型"
+          min-width="120"
+        >
           <template #default="{ row }">
             {{ row.vehicle?.brand }} {{ row.vehicle?.model }}
           </template>
         </el-table-column>
-        <el-table-column prop="mileage" label="里程数" width="100">
+        <el-table-column
+          prop="mileage"
+          label="里程数"
+          width="100"
+        >
           <template #default="{ row }">
             {{ row.mileage ? `${row.mileage} km` : '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="totalAmount" label="金额" width="100">
-          <template #default="{ row }">¥{{ row.totalAmount?.toFixed(2) }}</template>
-        </el-table-column>
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column
+          prop="totalAmount"
+          label="金额"
+          width="100"
+        >
           <template #default="{ row }">
-            <el-tag :type="statusMap[row.status].type" size="small">
+            ¥{{ row.totalAmount?.toFixed(2) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="100"
+        >
+          <template #default="{ row }">
+            <el-tag
+              :type="statusMap[row.status].type"
+              size="small"
+            >
               {{ statusMap[row.status].label }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="创建时间" width="160">
+        <el-table-column
+          prop="createdAt"
+          label="创建时间"
+          width="160"
+        >
           <template #default="{ row }">
             {{ new Date(row.createdAt).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column
+          label="操作"
+          width="200"
+          fixed="right"
+        >
           <template #default="{ row }">
-            <el-button size="small" @click="handleView(row)">查看</el-button>
-            <el-button v-if="row.status === 'pending'" size="small" @click="handleEdit(row)">编辑</el-button>
-            <el-button v-if="row.status === 'pending'" size="small" type="success" @click="handleComplete(row)">结算</el-button>
+            <el-button
+              size="small"
+              @click="handleView(row)"
+            >
+              查看
+            </el-button>
+            <el-button
+              v-if="row.status === 'pending'"
+              size="small"
+              @click="handleEdit(row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              v-if="row.status === 'pending'"
+              size="small"
+              type="success"
+              @click="handleComplete(row)"
+            >
+              结算
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -94,9 +176,21 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="editingOrder ? '编辑工单' : '新建工单'" width="900px" top="5vh">
-      <el-form :model="formData" :rules="formRules" ref="formRef" label-width="80px">
-        <el-divider content-position="left">客户信息</el-divider>
+    <el-dialog
+      v-model="dialogVisible"
+      :title="editingOrder ? '编辑工单' : '新建工单'"
+      width="900px"
+      top="5vh"
+    >
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="80px"
+      >
+        <el-divider content-position="left">
+          客户信息
+        </el-divider>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="客户">
@@ -119,17 +213,26 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="新客户名">
-              <el-input v-model="formData.newCustomerName" placeholder="输入新客户名称" :disabled="!!formData.customerId" />
+              <el-input
+                v-model="formData.newCustomerName"
+                placeholder="输入新客户名称"
+                :disabled="!!formData.customerId"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="电话">
-              <el-input v-model="formData.customerPhone" placeholder="客户电话" />
+              <el-input
+                v-model="formData.customerPhone"
+                placeholder="客户电话"
+              />
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-divider content-position="left">车辆信息</el-divider>
+        <el-divider content-position="left">
+          车辆信息
+        </el-divider>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="已有车辆">
@@ -139,8 +242,8 @@
                 clearable
                 placeholder="选择已有车辆"
                 style="width: 100%"
-                @change="handleVehicleChange"
                 :disabled="!formData.customerId"
+                @change="handleVehicleChange"
               >
                 <el-option
                   v-for="v in vehicleList"
@@ -153,40 +256,66 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="新车牌">
-              <el-input v-model="formData.newPlateNumber" placeholder="输入新车牌号" :disabled="!!formData.vehicleId" />
+              <el-input
+                v-model="formData.newPlateNumber"
+                placeholder="输入新车牌号"
+                :disabled="!!formData.vehicleId"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="品牌">
-              <el-input v-model="formData.vehicleBrand" placeholder="车辆品牌" />
+              <el-input
+                v-model="formData.vehicleBrand"
+                placeholder="车辆品牌"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="型号">
-              <el-input v-model="formData.vehicleModel" placeholder="车辆型号" />
+              <el-input
+                v-model="formData.vehicleModel"
+                placeholder="车辆型号"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="里程数">
-              <el-input-number v-model="formData.mileage" :min="0" style="width: 100%" />
+              <el-input-number
+                v-model="formData.mileage"
+                :min="0"
+                style="width: 100%"
+              />
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-divider content-position="left">维修项目</el-divider>
+        <el-divider content-position="left">
+          维修项目
+        </el-divider>
 
         <div class="items-section">
-          <div v-for="(item, index) in formData.items" :key="index" class="item-row">
+          <div
+            v-for="(item, index) in formData.items"
+            :key="index"
+            class="item-row"
+          >
             <el-select
               v-model="item.type"
               placeholder="类型"
               style="width: 100px"
               @change="handleItemTypeChange(index)"
             >
-              <el-option label="配件" value="part" />
-              <el-option label="工时" value="labor" />
+              <el-option
+                label="配件"
+                value="part"
+              />
+              <el-option
+                label="工时"
+                value="labor"
+              />
             </el-select>
             <el-select
               v-if="item.type === 'part'"
@@ -211,17 +340,51 @@
               placeholder="项目名称"
               style="width: 200px"
             />
-            <el-input-number v-model="item.quantity" :min="1" :max="999" style="width: 120px" @change="calcAmount(index)" />
-            <el-input-number v-model="item.price" :min="0" :precision="2" style="width: 120px" @change="calcAmount(index)" />
+            <el-input-number
+              v-model="item.quantity"
+              :min="1"
+              :max="999"
+              style="width: 120px"
+              @change="calcAmount(index)"
+            />
+            <el-input-number
+              v-model="item.price"
+              :min="0"
+              :precision="2"
+              style="width: 120px"
+              @change="calcAmount(index)"
+            />
             <span class="amount">¥{{ item.amount?.toFixed(2) || '0.00' }}</span>
-            <el-button type="danger" :icon="Delete" circle @click="removeItem(index)" />
+            <el-button
+              type="danger"
+              :icon="Delete"
+              circle
+              @click="removeItem(index)"
+            />
           </div>
-          <el-button type="primary" plain @click="addItem('part')">+ 添加配件</el-button>
-          <el-button type="primary" plain @click="addItem('labor')">+ 添加工时</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="addItem('part')"
+          >
+            + 添加配件
+          </el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="addItem('labor')"
+          >
+            + 添加工时
+          </el-button>
         </div>
 
         <el-form-item label="备注">
-          <el-input v-model="formData.remark" type="textarea" :rows="2" placeholder="备注信息" />
+          <el-input
+            v-model="formData.remark"
+            type="textarea"
+            :rows="2"
+            placeholder="备注信息"
+          />
         </el-form-item>
 
         <div class="total-section">
@@ -230,42 +393,105 @@
         </div>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+        <el-button @click="dialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleSubmit"
+        >
+          确定
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="detailDialogVisible" title="工单详情" width="700px">
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="工单号">{{ currentOrder?.orderNo }}</el-descriptions-item>
+    <el-dialog
+      v-model="detailDialogVisible"
+      title="工单详情"
+      width="700px"
+    >
+      <el-descriptions
+        :column="2"
+        border
+      >
+        <el-descriptions-item label="工单号">
+          {{ currentOrder?.orderNo }}
+        </el-descriptions-item>
         <el-descriptions-item label="状态">
           <el-tag :type="statusMap[currentOrder?.status || 'pending'].type">
             {{ statusMap[currentOrder?.status || 'pending'].label }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="客户">{{ currentOrder?.customer?.name }}</el-descriptions-item>
-        <el-descriptions-item label="电话">{{ currentOrder?.customer?.phone || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="车牌">{{ currentOrder?.vehicle?.plateNumber }}</el-descriptions-item>
-        <el-descriptions-item label="车型">{{ currentOrder?.vehicle?.brand }} {{ currentOrder?.vehicle?.model }}</el-descriptions-item>
-        <el-descriptions-item label="里程数">{{ currentOrder?.mileage ? `${currentOrder.mileage} km` : '-' }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">{{ new Date(currentOrder?.createdAt || '').toLocaleString() }}</el-descriptions-item>
-        <el-descriptions-item label="备注" :span="2">{{ currentOrder?.remark || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="客户">
+          {{ currentOrder?.customer?.name }}
+        </el-descriptions-item>
+        <el-descriptions-item label="电话">
+          {{ currentOrder?.customer?.phone || '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="车牌">
+          {{ currentOrder?.vehicle?.plateNumber }}
+        </el-descriptions-item>
+        <el-descriptions-item label="车型">
+          {{ currentOrder?.vehicle?.brand }} {{ currentOrder?.vehicle?.model }}
+        </el-descriptions-item>
+        <el-descriptions-item label="里程数">
+          {{ currentOrder?.mileage ? `${currentOrder.mileage} km` : '-' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="创建时间">
+          {{ new Date(currentOrder?.createdAt || '').toLocaleString() }}
+        </el-descriptions-item>
+        <el-descriptions-item
+          label="备注"
+          :span="2"
+        >
+          {{ currentOrder?.remark || '-' }}
+        </el-descriptions-item>
       </el-descriptions>
 
-      <el-divider content-position="left">维修项目</el-divider>
-      <el-table :data="currentOrder?.items" stripe size="small">
-        <el-table-column prop="itemName" label="项目名称" />
-        <el-table-column prop="type" label="类型" width="80">
+      <el-divider content-position="left">
+        维修项目
+      </el-divider>
+      <el-table
+        :data="currentOrder?.items"
+        stripe
+        size="small"
+      >
+        <el-table-column
+          prop="itemName"
+          label="项目名称"
+        />
+        <el-table-column
+          prop="type"
+          label="类型"
+          width="80"
+        >
           <template #default="{ row }">
             {{ row.type === 'part' ? '配件' : '工时' }}
           </template>
         </el-table-column>
-        <el-table-column prop="quantity" label="数量" width="80" />
-        <el-table-column prop="price" label="单价" width="100">
-          <template #default="{ row }">¥{{ row.price?.toFixed(2) }}</template>
+        <el-table-column
+          prop="quantity"
+          label="数量"
+          width="80"
+        />
+        <el-table-column
+          prop="price"
+          label="单价"
+          width="100"
+        >
+          <template #default="{ row }">
+            ¥{{ row.price?.toFixed(2) }}
+          </template>
         </el-table-column>
-        <el-table-column prop="amount" label="金额" width="100">
-          <template #default="{ row }">¥{{ row.amount?.toFixed(2) }}</template>
+        <el-table-column
+          prop="amount"
+          label="金额"
+          width="100"
+        >
+          <template #default="{ row }">
+            ¥{{ row.amount?.toFixed(2) }}
+          </template>
         </el-table-column>
       </el-table>
 
@@ -274,14 +500,35 @@
       </div>
 
       <template #footer>
-        <el-button @click="detailDialogVisible = false">关闭</el-button>
-        <el-button type="primary" @click="handlePrint(currentOrder!)">打印</el-button>
-        <el-button v-if="currentOrder?.status === 'pending'" type="danger" @click="handleCancel(currentOrder!)">取消工单</el-button>
+        <el-button @click="detailDialogVisible = false">
+          关闭
+        </el-button>
+        <el-button
+          type="primary"
+          @click="handlePrint(currentOrder!)"
+        >
+          打印
+        </el-button>
+        <el-button
+          v-if="currentOrder?.status === 'pending'"
+          type="danger"
+          @click="handleCancel(currentOrder!)"
+        >
+          取消工单
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="printDialogVisible" title="打印预览" width="800px" top="5vh">
-      <div class="print-preview" ref="printContentRef">
+    <el-dialog
+      v-model="printDialogVisible"
+      title="打印预览"
+      width="800px"
+      top="5vh"
+    >
+      <div
+        ref="printContentRef"
+        class="print-preview"
+      >
         <div class="print-header">
           <h2>{{ printTemplate?.title || '维修结算单' }}</h2>
         </div>
@@ -312,7 +559,10 @@
             <span class="label">车型：</span>
             <span class="value">{{ currentOrder?.vehicle?.brand }} {{ currentOrder?.vehicle?.model }}</span>
           </div>
-          <div class="print-row" v-if="currentOrder?.mileage">
+          <div
+            v-if="currentOrder?.mileage"
+            class="print-row"
+          >
             <span class="label">里程：</span>
             <span class="value">{{ currentOrder.mileage }} km</span>
           </div>
@@ -329,7 +579,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in currentOrder?.items" :key="index">
+            <tr
+              v-for="(item, index) in currentOrder?.items"
+              :key="index"
+            >
               <td>{{ index + 1 }}</td>
               <td>{{ item.itemName }}</td>
               <td>{{ item.type === 'part' ? '配件' : '工时' }}</td>
@@ -340,53 +593,113 @@
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="5" style="text-align: right; font-weight: bold;">合计：</td>
-              <td style="font-weight: bold; color: #f56c6c;">¥{{ currentOrder?.totalAmount?.toFixed(2) }}</td>
+              <td
+                colspan="5"
+                style="text-align: right; font-weight: bold;"
+              >
+                合计：
+              </td>
+              <td style="font-weight: bold; color: #f56c6c;">
+                ¥{{ currentOrder?.totalAmount?.toFixed(2) }}
+              </td>
             </tr>
           </tfoot>
         </table>
-        <div class="print-footer" v-if="currentOrder?.remark">
+        <div
+          v-if="currentOrder?.remark"
+          class="print-footer"
+        >
           <span class="label">备注：</span>
           <span class="value">{{ currentOrder.remark }}</span>
         </div>
         <div class="print-sign">
           <div class="sign-item">
             <span>客户签字：</span>
-            <span class="sign-line"></span>
+            <span class="sign-line" />
           </div>
           <div class="sign-item">
             <span>维修人员：</span>
-            <span class="sign-line"></span>
+            <span class="sign-line" />
           </div>
         </div>
       </div>
       <template #footer>
-        <el-button @click="printDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="doPrint">确认打印</el-button>
+        <el-button @click="printDialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="doPrint"
+        >
+          确认打印
+        </el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="completeDialogVisible" title="结算工单" width="450px">
-      <el-form :model="completeData" :rules="completeRules" ref="completeFormRef" label-width="80px">
+    <el-dialog
+      v-model="completeDialogVisible"
+      title="结算工单"
+      width="450px"
+    >
+      <el-form
+        ref="completeFormRef"
+        :model="completeData"
+        :rules="completeRules"
+        label-width="80px"
+      >
         <el-form-item label="应付金额">
           <span class="total-amount">¥{{ currentOrder?.totalAmount?.toFixed(2) }}</span>
         </el-form-item>
-        <el-form-item label="支付方式" prop="paymentType">
-          <el-select v-model="completeData.paymentType" style="width: 100%">
-            <el-option label="现金" value="cash" />
-            <el-option label="微信" value="wechat" />
-            <el-option label="支付宝" value="alipay" />
-            <el-option label="会员储值" value="member" />
-            <el-option label="月结" value="monthly" />
+        <el-form-item
+          label="支付方式"
+          prop="paymentType"
+        >
+          <el-select
+            v-model="completeData.paymentType"
+            style="width: 100%"
+          >
+            <el-option
+              label="现金"
+              value="cash"
+            />
+            <el-option
+              label="微信"
+              value="wechat"
+            />
+            <el-option
+              label="支付宝"
+              value="alipay"
+            />
+            <el-option
+              label="会员储值"
+              value="member"
+            />
+            <el-option
+              label="月结"
+              value="monthly"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="实付金额">
-          <el-input-number v-model="completeData.paidAmount" :min="0" :precision="2" style="width: 100%" />
+          <el-input-number
+            v-model="completeData.paidAmount"
+            :min="0"
+            :precision="2"
+            style="width: 100%"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="completeDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleCompleteSubmit" :loading="submitting">确认结算</el-button>
+        <el-button @click="completeDialogVisible = false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          :loading="submitting"
+          @click="handleCompleteSubmit"
+        >
+          确认结算
+        </el-button>
       </template>
     </el-dialog>
   </Layout>
