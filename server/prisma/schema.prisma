@@ -48,15 +48,21 @@ model Part {
 
 // 库存流水表
 model StockLog {
-  id        Int      @id @default(autoincrement())
-  partId    Int
-  type      String   // in, out
-  quantity  Int
-  reason    String?  // 入库原因/出库原因
-  orderId   Int?     // 关联维修单
-  createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  partId     Int
+  type       String   // in, out
+  source     String?  // 入库来源: purchase, customer, initial, used, other
+  outType    String?  // 出库类型: repair, return, damage, other
+  quantity   Int
+  costPrice  Float?   // 本次入库成本价
+  reason     String?  // 入库原因/出库原因
+  orderId    Int?     // 关联维修单
+  supplierId Int?     // 关联供应商
+  createdAt  DateTime @default(now())
 
-  part      Part     @relation(fields: [partId], references: [id])
+  part     Part      @relation(fields: [partId], references: [id])
+  supplier Supplier? @relation(fields: [supplierId], references: [id])
+  order    Order?    @relation(fields: [orderId], references: [id])
 }
 
 // 客户表
@@ -88,22 +94,29 @@ model Vehicle {
 
 // 维修工单表
 model Order {
-  id          Int      @id @default(autoincrement())
-  orderNo     String   @unique
+  id          Int       @id @default(autoincrement())
+  orderNo     String    @unique
   customerId  Int
   vehicleId   Int
-  mileage     Int?     // 里程数
-  status      String   @default("pending") // pending, completed, cancelled
-  totalAmount Float    @default(0)
-  paidAmount  Float    @default(0)
-  paymentType String?  // cash, member
+  mileage     Int?
+  status      String    @default("pending") // pending, completed, cancelled
+  totalAmount Float     @default(0)
+  paidAmount  Float     @default(0)
+  paymentType String?   // cash, wechat, alipay, member, monthly
+  completedAt DateTime? // 完成时间（结算时间）
+  dueDate     DateTime? // 月结到期日
   remark      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  customer    Customer @relation(fields: [customerId], references: [id])
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
-  items       OrderItem[]
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  vehicle    Vehicle     @relation(fields: [vehicleId], references: [id])
+  items      OrderItem[]
+  stockLogs  StockLog[]
+
+  @@index([status])
+  @@index([customerId])
+  @@index([dueDate])
 }
 
 // 维修工单明细表
@@ -132,6 +145,7 @@ model Supplier {
   updatedAt DateTime @updatedAt
 
   parts     Part[]
+  stockLogs StockLog[]
 }
 
 // 财务记录表
@@ -142,4 +156,17 @@ model FinanceRecord {
   amount    Float
   remark    String?
   createdAt DateTime @default(now())
+}
+
+// 打印模板表
+model PrintTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      String   // repair, other
+  content   String   // JSON 格式的模板配置
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
 }

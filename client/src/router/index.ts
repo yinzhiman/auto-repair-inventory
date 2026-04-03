@@ -21,6 +21,24 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '首页', requiresAuth: true },
   },
   {
+    path: '/inventory',
+    name: 'Inventory',
+    component: () => import('@/views/inventory/index.vue'),
+    meta: { title: '库存管理', requiresAuth: true },
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('@/views/orders/index.vue'),
+    meta: { title: '维修工单', requiresAuth: true },
+  },
+  {
+    path: '/system/print-templates',
+    name: 'PrintTemplates',
+    component: () => import('@/views/system/print-templates.vue'),
+    meta: { title: '打印模板', requiresAuth: true },
+  },
+  {
     path: '/403',
     name: 'Forbidden',
     component: () => import('@/views/error/403.vue'),
